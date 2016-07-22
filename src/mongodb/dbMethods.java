@@ -9,16 +9,18 @@ import com.mongodb.DBCollection;
 import com.mongodb.DB;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.client.model.Filters;
 import com.mongodb.util.JSON;
+import org.bson.Document;
 public class dbMethods 
 {
 	DB db=null;
-	DBCollection coll=null;
+	//DBCollection coll=null;
 	public dbMethods()
 	{
 	dbConnection dbc=new dbConnection();
 	db=dbc.connectiondb();
-	 coll = db.getCollection("busroutes");
+	 //coll = db.getCollection("busroutes");
 	}
 	
 	public void insert()
@@ -106,6 +108,30 @@ public class dbMethods
 		   // cursor.close();
 		 }
 	}
+	public DBObject findParticularKeyFrom(String place)
+	{
+		System.out.println(place);
+		 DBCollection coll = db.getCollection("FromAdibatla");
+		 BasicDBObject query = new BasicDBObject("place", place);
+		 DBCursor cursor=null;
+		 try {
+		 List<DBObject> busList=coll.find(query).toArray();
+		 System.out.println("--------------------");
+		 for(DBObject list:busList )
+		 {
+			 //System.out.println(list.get("timings"));
+			 BasicDBObject inQuery = (BasicDBObject) list;
+			 System.out.println("testing----"+inQuery);
+				
+				
+			 //inQuery.put("timings", new BasicDBObject("$in", doc));
+		     
+		 }
+		 return busList.get(0);
+	 } finally {
+	   // cursor.close();
+	 }
+}
 	public DBObject findPlacetime(String place,String time)
 	{
 		 DBCollection coll = db.getCollection("busroutes");
@@ -207,15 +233,37 @@ public class dbMethods
 	}*/
 	
 	public List<String> getPlaces(){
+		DBCollection coll = db.getCollection("busroutes");
 		List<String> places=new ArrayList<String>();
-		BasicDBObject query = new BasicDBObject();
-		 BasicDBObject query1 = new BasicDBObject("place", "1");
-		List<DBObject> busList=(List<DBObject>) coll.find(query,query1).toArray();
-		System.out.println(busList);
-		for(DBObject listele:busList){
-			places.add(listele.get("place").toString());
+		BasicDBObject empty = new BasicDBObject();
+		BasicDBObject queryDocument = new BasicDBObject("place",1).append("_id",0);
+		List<DBObject> sourceDocument = coll.find(empty,queryDocument).toArray();
+		for(DBObject list:sourceDocument){
+			places.add(list.get("place").toString());
 		}
+		System.out.println(sourceDocument);
 		return places;
+		
+	}
+	public void appendRoute(String place, String time, int routes,String landmark)
+	{	
+		/*BasicDBObject queryDocument = new BasicDBObject("place", place).append("timings.time", time).append("timings.landmark", landmark);
+		System.out.println(queryDocument);
+		List<DBObject> sourceDocument = coll.find(queryDocument).toArray();
+		BasicDBObject elementToArray = new BasicDBObject("timings.routes", routes);
+		BasicDBObject pushElement = new BasicDBObject("$push", elementToArray);
+	    coll.update(queryDocument, pushElement);
+
+		System.out.println(sourceDocument);
+		BasicDBObject query = new BasicDBObject("place", place);
+		List<DBObject> query1 = coll.find(query).toArray();
+		return query1.get(0);*/
+		DBCollection coll = db.getCollection("busroutes");
+		 Document sourceDocument=(Document) coll.findOne(new Document("place",place));
+               /* Filters.eq("timings.time", "time"), Filters.eq("timings.landmark", landmark))).first();*/
+		//coll.updateOne(new Document("id",1).append("score.mark1", "1").append("score.mark2", "2"),("$set",("score.count","three")));
+          System.out.println(sourceDocument);
+         // return sourceDocument.curr();
 		
 	}
 }
