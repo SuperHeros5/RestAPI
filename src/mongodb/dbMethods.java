@@ -2,6 +2,7 @@ package mongodb;
 
 import java.util.ArrayList;
 
+
 import java.util.List;
 
 import com.mongodb.BasicDBObject;
@@ -9,9 +10,9 @@ import com.mongodb.DBCollection;
 import com.mongodb.DB;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.client.model.Filters;
+
 import com.mongodb.util.JSON;
-import org.bson.Document;
+
 public class dbMethods 
 {
 	DB db=null;
@@ -259,10 +260,10 @@ public class dbMethods
 		List<DBObject> query1 = coll.find(query).toArray();
 		return query1.get(0);*/
 		DBCollection coll = db.getCollection("busroutes");
-		 Document sourceDocument=(Document) coll.findOne(new Document("place",place));
+		 //Document sourceDocument=(Document) coll.findOne(new Document("place",place));
                /* Filters.eq("timings.time", "time"), Filters.eq("timings.landmark", landmark))).first();*/
 		//coll.updateOne(new Document("id",1).append("score.mark1", "1").append("score.mark2", "2"),("$set",("score.count","three")));
-          System.out.println(sourceDocument);
+        //  System.out.println(sourceDocument);
          // return sourceDocument.curr();
 		
 	}
